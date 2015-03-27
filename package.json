@@ -4,7 +4,7 @@
   "description": "collection of some mixins for lodash that I use",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -20,5 +20,9 @@
   "bugs": {
     "url": "https://github.com/AVVS/lodash-mixins/issues"
   },
-  "homepage": "https://github.com/AVVS/lodash-mixins"
+  "homepage": "https://github.com/AVVS/lodash-mixins",
+  "devDependencies": {
+    "jest-cli": "^0.4.0",
+    "lodash-node": "^3.6.0"
+  }
 }
