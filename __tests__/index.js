@@ -3,14 +3,14 @@
 'use strict';
 
 jest.dontMock('../index.js');
-jest.dontMock('lodash-node');
+jest.dontMock('lodash');
 
 describe('mixins', function () {
 
     describe('deepValues', function () {
 
         it('Correctly assembles values array', function () {
-            var _ = require('lodash-node');
+            var _ = require('lodash').runInContext();
             var mixins = require('../index.js');
             _.mixin(_.pick(mixins, 'deepValues'));
 
@@ -39,7 +39,7 @@ describe('mixins', function () {
         var results = [ 1, 1, 1, 1, 0, 0, 0, 0, 0, 0 ];
 
         it('correctly checks passed variables', function () {
-            var _ = require('lodash-node');
+            var _ = require('lodash').runInContext();
             var mixins = require('../index.js');
             _.mixin(_.pick(mixins, 'isNumeric'));
 
@@ -80,7 +80,7 @@ describe('mixins', function () {
                 '318293018239012830912801231231231'
             ];
 
-            var _ = require('lodash-node');
+            var _ = require('lodash').runInContext();
             var mixins = require('../index.js');
             _.mixin(_.pick(mixins, 'compareInt'));
 
@@ -120,7 +120,7 @@ describe('mixins', function () {
                 '318293018239012830912801231231231'
             ];
 
-            var _ = require('lodash-node');
+            var _ = require('lodash').runInContext();
             var mixins = require('../index.js');
             _.mixin(_.pick(mixins, ['compareInt', 'compareNumericStrings']));
 
@@ -137,7 +137,7 @@ describe('mixins', function () {
     describe('compactObject', function () {
 
         it('Correctly removes falsy values', function () {
-            var _ = require('lodash-node');
+            var _ = require('lodash').runInContext();
             var mixins = require('../index.js');
             _.mixin(_.pick(mixins, 'compactObject'));
 

@@ -8,7 +8,7 @@ Please note, all the mixins heavily rely on value of `this`, so don't forget
 to bind when passing to `.sort` or other methods
 
 ```js
-var _ = require('lodash-node');
+var _ = require('lodash').runInContext();
 var mixins = require('mm-lodash');
 
 // adds all mixins
