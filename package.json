@@ -1,0 +1,24 @@
+{
+  "name": "mm-lodash",
+  "version": "1.0.0",
+  "description": "collection of some mixins for lodash that I use",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AVVS/lodash-mixins.git"
+  },
+  "keywords": [
+    "lodash",
+    "mixins",
+    "sorting"
+  ],
+  "author": "Vitaly Aminev <v@aminev.me>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AVVS/lodash-mixins/issues"
+  },
+  "homepage": "https://github.com/AVVS/lodash-mixins"
+}
