@@ -29,7 +29,7 @@ exports.deepValues = function deepValues(obj) {
  */
 exports.isNumeric = function (id) {
     // check that its not an array, because of [10].toString => '10'
-    return /^\d+$/.test(id) && !this.isArray(id);
+    return /^\d+$/.test(id) && !Array.isArray(id);
 };
 
 /**
@@ -128,9 +128,9 @@ exports.sortNetworks = function (a, b) {
             case 'facebook':
                 var idsA = arrayify(a.id);
                 var idsB = arrayify(b.id);
-                var numericIdA = find(idsA, isNumeric);
-                var numericIdB = find(idsB, isNumeric);
-                return compareNumericStrings(numericIdA, numericIdB);
+                var numericIdA = find.call(this, idsA, isNumeric);
+                var numericIdB = find.call(this, idsB, isNumeric);
+                return compareNumericStrings.call(this, numericIdA, numericIdB);
 
             // dont care
             default:
@@ -147,7 +147,7 @@ exports.sortNetworks = function (a, b) {
  * @return {Array}
  */
 exports.arrayify = function (data) {
-    return this.isArray(data) ? data : [data];
+    return Array.isArray(data) ? data : [data];
 };
 
 /**
