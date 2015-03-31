@@ -1,36 +1,53 @@
 'use strict';
 
 var push = Array.prototype.push;
+var possibleLodashModuleNames = ['lodash', 'lodash-node', 'lodash-compat'];
+var _;
+
+for (var i = 0; i < possibleLodashModuleNames.length; i++) {
+    try {
+        _ = require(possibleLodashModuleNames[i]);
+        break;
+    } catch (e) {
+
+    }
+}
+
+if (!_ || typeof _ !== 'function') {
+    throw new Error('Must have lodash, lodash-node or lodash-compat in dependencies');
+}
+
+var _forOwn = _.forOwn,
+    _isObject = _.isObject,
+    _isArray = _.isArray,
+    _find = _.find;
 
 /**
  * Accepts object and returns deepValues
  * @param {Object} obj
  */
-exports.deepValues = function deepValues(obj) {
-    var res = [],
-        self = this,
-        forOwn = this.forOwn,
-        isObject = this.isObject;
+function deepValues(obj) {
+    var res = [];
 
-    forOwn(obj, function iterateOverOwnProperties(value) {
-        if(isObject(value)) {
-            push.apply(res, deepValues.call(self, value));
+    _forOwn(obj, function iterateOverOwnProperties(value) {
+        if (_isObject(value)) {
+            push.apply(res, deepValues(value));
         } else {
             res.push(value);
         }
     });
 
     return res;
-};
+}
 
 /**
  * Checks if passed value is numeric, can have leading 0
  * @param {String|Number} id
  */
-exports.isNumeric = function (id) {
+function isNumeric(id) {
     // check that its not an array, because of [10].toString => '10'
-    return /^\d+$/.test(id) && !Array.isArray(id);
-};
+    return /^\d+$/.test(id) && !_isArray(id);
+}
 
 /**
  * Compares big int, use in the js.sort function
@@ -38,7 +55,7 @@ exports.isNumeric = function (id) {
  * @param {String} a
  * @param {String} b
  */
-exports.compareInt = function (a, b) {
+function compareInt(a, b) {
     a = a.toString();
     b = b.toString();
 
@@ -74,7 +91,7 @@ exports.compareInt = function (a, b) {
     }
 
     return -1;
-};
+}
 
 /**
  * Compares numeric string (js sucks, because it doesnt handle 64 bit ints) -
@@ -82,9 +99,7 @@ exports.compareInt = function (a, b) {
  * @param {String} numericIdA
  * @param {String} numericIdB
  */
-exports.compareNumericStrings = function (numericIdA, numericIdB) {
-    var compareInt = this.compareInt;
-
+function compareNumericStrings(numericIdA, numericIdB) {
     if (numericIdA && numericIdB) {
         numericIdA = numericIdA.toString();
         numericIdB = numericIdB.toString();
@@ -109,28 +124,33 @@ exports.compareNumericStrings = function (numericIdA, numericIdB) {
     } else {
         return 0;
     }
-};
+}
+
+/**
+ * Creates array if passed object is not one, otherwise noop
+ * @param  {Mixed} data
+ * @return {Array}
+ */
+function arrayify(data) {
+    return _isArray(data) ? data : [data];
+}
+
 
 /**
  * this is useful for sorting multiple networks of the same value
  * @param {Object} a { network, id }
  * @param {Object} b { network, id }
  */
-exports.sortNetworks = function (a, b) {
-    var find = this.find,
-        arrayify = this.arrayify,
-        compareNumericStrings = this.compareNumericStrings,
-        isNumeric = this.isNumeric;
-
+function sortNetworks(a, b) {
     // sort matching networks only
     if (a.network === b.network) {
         switch (a.network) {
             case 'facebook':
                 var idsA = arrayify(a.id);
                 var idsB = arrayify(b.id);
-                var numericIdA = find.call(this, idsA, isNumeric);
-                var numericIdB = find.call(this, idsB, isNumeric);
-                return compareNumericStrings.call(this, numericIdA, numericIdB);
+                var numericIdA = _find(idsA, isNumeric);
+                var numericIdB = _find(idsB, isNumeric);
+                return compareNumericStrings(numericIdA, numericIdB);
 
             // dont care
             default:
@@ -139,30 +159,34 @@ exports.sortNetworks = function (a, b) {
     }
 
     return 0;
-};
-
-/**
- * Creates array if passed object is not one, otherwise noop
- * @param  {Mixed} data
- * @return {Array}
- */
-exports.arrayify = function (data) {
-    return Array.isArray(data) ? data : [data];
-};
+}
 
 /**
  * Accepts object and returns shallow copy with keys that resolve to
  * truthy values
  * @param {Object} object
  */
-exports.compactObject = function (object) {
+function compactObject(object) {
     var output = {};
 
-    this.forOwn(object, function (value, key) {
+    _forOwn(object, function (value, key) {
         if (value) {
             output[key] = value;
         }
     });
 
     return output;
+}
+
+
+// public API
+
+module.exports = {
+    isNumeric: isNumeric,
+    deepValues: deepValues,
+    compareInt: compareInt,
+    compareNumericStrings: compareNumericStrings,
+    arrayify: arrayify,
+    sortNetworks: sortNetworks,
+    compactObject: compactObject
 };
