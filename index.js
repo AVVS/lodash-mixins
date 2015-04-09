@@ -18,11 +18,11 @@ if (!_ || typeof _ !== 'function') {
 }
 
 var _forOwn = _.forOwn,
-    _isPlainObject = _.isPlainObject,
     _isObject = _.isObject,
     _isEmpty = _.isEmpty,
     _isArray = _.isArray,
-    _find = _.find;
+    _find = _.find,
+    _isFunction = _.isFunction;
 
 /**
  * Accepts object and returns deepValues
@@ -163,6 +163,51 @@ function sortNetworks(a, b) {
     return 0;
 }
 
+function assessObject(object) {
+
+    if (_isEmpty(object)) {
+        return false;
+    }
+
+    if (_isFunction(object)) {
+        return object;
+    }
+
+    if (_isArray(object)) {
+        var shallowOutput = [];
+        object.forEach(function (datum) {
+            if (datum) {
+
+                if (!_isObject || typeof datum === 'string') {
+                    shallowOutput.push(datum);
+                    return;
+                }
+
+                var assessedValue = assessObject(datum);
+                if (assessedValue) {
+                    shallowOutput.push(assessedValue);
+                    return;
+                }
+
+            }
+
+        });
+
+        if (shallowOutput.length === 0) {
+            return false;
+        }
+
+        return shallowOutput;
+    }
+
+    var compactedObject = compactObjectDeep(object);
+    if (_isEmpty(compactedObject)) {
+        return false;
+    }
+
+    return compactedObject;
+}
+
 /**
  * Creates object "compactor" iterator
  * @param {Object}  output
@@ -172,33 +217,24 @@ function createObjectIterator(output, isDeep) {
 
     if (isDeep) {
         return function compactObjectIteratorDeep(value, key) {
+
             if (value) {
+
                 if (_isObject(value)) {
-                    if (_isEmpty(value)) {
-                        return;
+
+                    var assessedValue = assessObject(value);
+                    if (assessedValue !== false) {
+                        output[key] = assessedValue;
                     }
 
-                    if (_isPlainObject(value)) {
-                        output[key] = compactObjectDeep(value);
-                        return;
-                    }
-
-                    if (_isArray(value)) {
-                        output[key] = value.map(function (datum) {
-                            if (_isPlainObject(value)) {
-                                return compactObjectDeep(datum);
-                            }
-
-                            return datum;
-                        });
-                        return;
-                    }
-
+                    return;
                 }
 
                 output[key] = value;
             }
+
         };
+
     }
 
     return function compactObjectIterator(value, key) {

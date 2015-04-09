@@ -37,7 +37,7 @@ removed
 ## compactObjectDeep
 
 Same as compact object, but removes empty objects and arrays, as well as traverses
-plain objects and cleans them as well
+plain objects and cleans them as well. This is not safe is you have circular references
 
 ## arrayify
 
