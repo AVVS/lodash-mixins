@@ -183,6 +183,17 @@ function createObjectIterator(output, isDeep) {
                         return;
                     }
 
+                    if (_isArray(value)) {
+                        output[key] = value.map(function (datum) {
+                            if (_isPlainObject(value)) {
+                                return compactObjectDeep(datum);
+                            }
+
+                            return datum;
+                        });
+                        return;
+                    }
+
                 }
 
                 output[key] = value;
