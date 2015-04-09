@@ -34,6 +34,11 @@ recursively walk over object and gather it's values, return array
 check own properties of an object and return shallow copy with falsy properties
 removed
 
+## compactObjectDeep
+
+Same as compact object, but removes empty objects and arrays, as well as traverses
+plain objects and cleans them as well
+
 ## arrayify
 
 Create array from a passed value or return passed array

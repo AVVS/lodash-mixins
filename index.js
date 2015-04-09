@@ -18,7 +18,9 @@ if (!_ || typeof _ !== 'function') {
 }
 
 var _forOwn = _.forOwn,
+    _isPlainObject = _.isPlainObject,
     _isObject = _.isObject,
+    _isEmpty = _.isEmpty,
     _isArray = _.isArray,
     _find = _.find;
 
@@ -162,22 +164,61 @@ function sortNetworks(a, b) {
 }
 
 /**
- * Accepts object and returns shallow copy with keys that resolve to
- * truthy values
- * @param {Object} object
+ * Creates object "compactor" iterator
+ * @param {Object}  output
+ * @param {Boolean} isDeep
  */
-function compactObject(object) {
-    var output = {};
+function createObjectIterator(output, isDeep) {
 
-    _forOwn(object, function (value, key) {
+    if (isDeep) {
+        return function compactObjectIteratorDeep(value, key) {
+            if (value) {
+                if (_isObject(value)) {
+                    if (_isEmpty(value)) {
+                        return;
+                    }
+
+                    if (_isPlainObject(value)) {
+                        output[key] = compactObjectDeep(value);
+                        return;
+                    }
+
+                }
+
+                output[key] = value;
+            }
+        };
+    }
+
+    return function compactObjectIterator(value, key) {
         if (value) {
             output[key] = value;
         }
-    });
+    };
+}
+
+
+/**
+ * Accepts object and returns shallow copy with keys that resolve to
+ * truthy values
+ * @param {Object}  object
+ * @param {Boolean} deep  - if specified, will remove empty array and objects
+ */
+function compactObject(object, deep) {
+    var output = {};
+
+    _forOwn(object, createObjectIterator(output, deep));
 
     return output;
 }
 
+/**
+ * Shorthand for compactObject(object, true);
+ * @param {Object} object
+ */
+function compactObjectDeep(object) {
+    return compactObject(object, true);
+}
 
 // public API
 
@@ -188,5 +229,6 @@ module.exports = {
     compareNumericStrings: compareNumericStrings,
     arrayify: arrayify,
     sortNetworks: sortNetworks,
-    compactObject: compactObject
+    compactObject: compactObject,
+    compactObjectDeep: compactObjectDeep
 };
