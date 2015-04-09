@@ -191,7 +191,7 @@ function assessObject(object) {
         object.forEach(function (datum) {
             if (datum) {
 
-                if (isObject(datum)) {
+                if (!isObject(datum)) {
                     shallowOutput.push(datum);
                     return;
                 }
