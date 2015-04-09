@@ -163,6 +163,19 @@ function sortNetworks(a, b) {
     return 0;
 }
 
+function isObject(datum) {
+    if (!_isObject(datum)) {
+        return false;
+    }
+
+    var type = typeof datum;
+    if (type === 'string' || type === 'number') {
+        return false;
+    }
+
+    return true;
+}
+
 function assessObject(object) {
 
     if (_isEmpty(object)) {
@@ -178,7 +191,7 @@ function assessObject(object) {
         object.forEach(function (datum) {
             if (datum) {
 
-                if (!_isObject || typeof datum === 'string') {
+                if (isObject(datum)) {
                     shallowOutput.push(datum);
                     return;
                 }
@@ -220,7 +233,7 @@ function createObjectIterator(output, isDeep) {
 
             if (value) {
 
-                if (_isObject(value)) {
+                if (isObject(value)) {
 
                     var assessedValue = assessObject(value);
                     if (assessedValue !== false) {

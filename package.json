@@ -1,6 +1,6 @@
 {
   "name": "mm-lodash",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "collection of some mixins for lodash that I use",
   "main": "index.js",
   "scripts": {
